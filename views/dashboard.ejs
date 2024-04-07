@@ -1,0 +1,642 @@
+<!-- dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NFC ATTENDANCE</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Font Awesome Cdn Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Additional CSS can go here */
+   
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="#" class="logo">
+          <img src="images/nfc-icon-31.png">
+          <span class="nav-item">Dashboard</span>
+        </a></li>
+        <li><a href="#" id="dashboard-link" class="nav-itemm">
+          <i class="fas fa-menorah"></i>
+          <span class="nav-item">Dashboard</span>
+        </a></li>
+        <li><a href="#" id="report-link" class="nav-itemm">
+          <i class="fas fa-file-alt"></i>
+          <span class="nav-item">Report</span>
+        </a></li>
+        <li><a href="#" id="attendance-link" class="nav-itemm">
+          <i class="fas fa-chart-bar"></i>
+          <span class="nav-item">View Attendance</span>
+        </a></li>
+        <li><a href="#" id="students-link" class="nav-itemm">
+          <i class="fas fa-users"></i>
+          <span class="nav-item">Total Students</span>
+        </a></li>
+<li><a href="#" id="profile-link" class="nav-itemm">
+  <i class="fas fa-user"></i>
+  <span class="nav-item">Profile</span>
+</a></li>
+        <li><a href="#" class="logout" onclick="logout()" id="logout-link" class="nav-itemm">
+          <i onclick="logout()" class="fas fa-sign-out-alt"></i>
+          <span onclick="logout()" class="nav-item">Log out</span>
+        </a></li>
+      </ul>
+    </nav>
+
+
+    <section class="main">
+      <div class="main-top">
+        <h1>Welcome to Dashboard</h1>
+        <i class="fas fa-user-circle" id="profile-icon"></i> <!-- Updated icon -->
+      </div>
+
+      <div id="welcome" class="tabcontent">
+        <!-- Welcome content with button for taking attendance -->
+        <div class="welcome-message" style="display: block;">
+            <h3 style="color: #55c57a;">Welcome <%= username %>!</h3>
+            <p>Welcome to your dashboard! Explore the tabs to manage your tasks, view attendance, and update your profile.</p>
+        </div><br>
+<div class="card-container">
+  <!-- Card 1 -->
+  <div class="card">
+    <h2>Hello <%= username %></h2>
+    <p>
+      Bid farewell to tedious excel sheets, and say hello to a more efficient way to manage employee attendance. Generate insightful reports, regularize attendance
+    </p>
+  </div>
+
+  <!-- Upcoming Holiday Card -->
+  <div class="card" id="upcomingHolidaysCard">
+    <h2>Upcoming Holidays</h2>
+    <div class="card-content" id="upcomingHolidaysContent">
+        <!-- Holidays will be dynamically inserted here -->
+    </div>
+</div>
+ <!-- Card 3 -->
+ <div onclick="takeAttendance()" class="card">
+  <h2>Take Attendance Using NFC</h2>
+  <p>Click Here to Attendance Using NFC</p>
+  <button onclick="takeAttendance()" class="secondary-button take-attendance-btn report-link" style="display: block;">Take Attendance Using NFC</button>
+</div>
+
+ <!-- Card 4 -->
+ <div onclick="showAddAttendanceForm()"  class="card">
+  <h2>Manually Add Attendance</h2>
+  <p>Click Here to Attendance Manually</p>
+  <button onclick="showAddAttendanceForm()" class="secondary-button manually-add report-link">Manually Add Attendance</button>
+</div>
+
+</div>
+        
+        <!-- <button onclick="takeAttendance()" class="secondary-button take-attendance-btn" style="display: block;">Take Attendance Using NFC</button> -->
+        <!-- <br> -->
+        <!-- Add button for manually adding attendance -->
+        <!-- <button onclick="showAddAttendanceForm()" class="secondary-button manually-add">Manually Add Attendance</button> -->
+
+        <!-- Add Attendance Form Container (Hidden by default) -->
+        <div class="attendance-form-container" id="addAttendanceFormContainer" style="display: none;">
+          <div class="attendance-form-header">
+            <h2>Add Attendance</h2>
+            <button class="close-btn" onclick="closeAddAttendanceForm()">&times;</button> <!-- Close button -->
+          </div>
+          <form id="attendanceForm"  onsubmit="submitAttendance(event)">
+            <label for="serialNumber">Serial Number:</label>
+            <input type="text" id="serialNumber" name="serialNumber" required><br>
+
+            <label for="logData">Log Data:</label>
+            <input type="text" id="logData" name="logData" required><br>
+
+            <label for="time">Time:</label>
+            <input type="datetime-local" id="time" name="time" required><br>
+
+            <label for="teacher">Teacher:</label>
+            <input type="text" id="teacher" name="teacher"><br>
+
+             <!-- Select Period -->
+    <label for="period">Period:</label>
+    <select id="period" name="period">
+      <option value="Period 1">Period 1</option>
+      <option value="Period 2">Period 2</option>
+      <option value="Period 3">Period 3</option>
+      <option value="Period 4">Period 4</option>
+      <option value="Period 5">Period 5</option>
+      <option value="Period 6">Period 6</option>
+    </select><br>
+
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject"><br>
+
+            <!-- Select collection for adding data -->
+            <label for="collection">Select Collection:</label>
+            <select id="collection" name="collection">
+              <option value="mathews_records">Mathews Records</option>
+              <option value="abel_records">Abel Records</option>
+              <option value="kevin_records">Kevin Records</option>
+              <option value="sonu_records">Sonu Records</option>
+            </select><br>
+
+            <button class="secondary-button-add" type="submit" >Add Attendance</button>
+          </form>
+        </div>
+      </div>
+   
+   <!-- Attendance content -->
+   <section class="attendance" style="display:none;">
+     <!-- Add the refresh icon -->
+     <button onclick="refreshPage()" class="refresh-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+
+    <div class="attendance-list">
+        <h1>Attendance List of Students</h1>
+        <br>
+        <p>Total Present: <span id="totalPresentCount" class="total-present-count">0</span></p>
+        <br>
+        <!-- Button to select date -->
+        <label for="attendanceDate">Select Date: </label>
+        <input type="date" id="attendanceDate">
+        <!-- Add select input for subject -->
+        <label for="attendanceSubject">Select Subject: </label>
+        <select id="attendanceSubject">
+            <option value="">All Subjects</option>
+            <% subjects.forEach(subject => { %>
+                <option value="<%= subject %>"><%= subject %></option>
+            <% }); %>
+        </select>
+        <label for="attendancePeriod">Select Period: </label>
+<select id="attendancePeriod">
+    <option value="">All Periods</option>
+    <option value="Period 1">Period 1</option>
+    <option value="Period 2">Period 2</option>
+    <option value="Period 3">Period 3</option>
+    <option value="Period 4">Period 4</option>
+    <option value="Period 5">Period 5</option>
+    <option value="Period 6">Period 6</option>
+    <!-- Add more options for other periods as needed -->
+</select>
+
+        <button onclick="displayAttendanceByDateAndSubjectandPeriod()" class="secondary-button">Display Attendance</button>
+
+        <table id="attendanceTable" class="table">
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)" style="position: relative;">Date <span class="sort-icon fas"></span></th>
+              <th onclick="sortTable(1)" style="position: relative;">Time <span class="sort-icon"></span></th>
+              <th onclick="sortTable(2)" style="position: relative;">Student Name<span class="sort-icon"></span></th>
+              <th onclick="sortTable(3)" style="position: relative;">Subject<span class="sort-icon"></span></th>
+              <th onclick="sortTable(4)" style="position: relative;">Period<span class="sort-icon"></span></th>
+              <th onclick="sortTable(6)" style="position: relative;">Message <span class="sort-icon"></span></th>
+              <th onclick="sortTable(6)" style="position: relative;">Delete <span class="sort-icon"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% attendanceData.forEach(data => { %>
+                <tr>
+                    <!-- Displaying date -->
+                    <td><%= data.time.toDateString() %></td>
+                    <!-- Displaying time -->
+                    <td><%= data.time.toLocaleTimeString() %></td>
+                    <td><%= data.studentName %></td>
+                    <td><%= data.subject %></td>
+                    <td><%= data.period %></td>
+                   
+                    <td>
+                      <!-- Message icon for each student -->
+                      <button onclick="sendMessage('<%= data.studentName %>')" class="message-btn"><i class="fas fa-envelope"></i></button>
+                    </td>
+                    <td>
+                     <!-- Ensure the button in your HTML correctly passes the ID -->
+<button onclick="deleteAttendance('<%= data._id %>', '<%= username %>')">Delete</button>
+                  </td>
+                   
+                </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="report" style="display:none;">
+      <!-- Report content -->
+      <div class="report-list">
+        <h1 >Monthly Attendance Report Generation</h1>
+        <!-- Add your report content here -->
+        <p>This report provides an overview of the monthly attendance records for all students. Here, you can generate reports in Excel and PDF formats according to your needs..</p>
+
+      <!-- Card 5 -->
+ <div   class="card">
+  <h2>Generate Execl Report</h2>
+  <p>Click Here to Download Execl Report in csv Format </p>
+  <a href="/generate-excel-report?username=<%= username %>" target="_blank" class="report-link report-excel">Download Excel Report <i class="fas fa-file-excel"></i></a>
+</div>
+
+  <!-- Card 5 -->
+  <div   class="card">
+    <h2>Generate PDF Report</h2>
+    <p>Click Here to Download PDF Attendance Report </p>
+    <a href="/generate-pdf-report?username=<%= username %>" class="report-link report-pdf" target="_blank">Download PDF Report <i class="fas fa-file-pdf"></i></a>
+  </div>
+
+        <!-- <div class="report-actions"> -->
+          <!-- <a href="/generate-excel-report?username=<%= username %>" target="_blank" class="report-link report-excel">Download Excel Report <i class="fas fa-file-excel"></i></a> -->
+          <!-- <a href="/generate-pdf-report?username=<%= username %>" class="report-link report-pdf" target="_blank">Download PDF Report <i class="fas fa-file-pdf"></i></a> -->
+          
+        <!-- </div> -->
+      
+    </section>
+
+    <section class="students" style="display:none;">
+      <!-- Students content -->
+      <div class="students-content">
+          <h1>Total Students</h1>
+          <!-- Add select input for class -->
+          <label for="attendanceClass">Select Class: </label>
+          <select id="attendanceClass">
+            <option value="">All Classes</option>
+            <% classes.forEach(function(classItem) { %>
+                <option value="<%= classItem %>"><%= classItem %></option>
+            <% }); %>
+          </select>
+          <button onclick="displayStudentsByClass()" class="secondary-button">Display Students</button>
+          <table id="attendanceTablee" class="table">
+            <thead>
+              <tr>
+                <th>Serial Number</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Phone Number</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(student => { %>
+                  <tr>
+                      <td><%= student.serialNumber %></td>
+                      <td><%= student.student_name %></td>
+                      <td><%= student.class %></td>
+                      <td><%= student.ph %></td>
+                  </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+    </section>
+
+    <section class="profile" style="display:none;">
+      <div class="profile-content">
+        <h1>Profile Information</h1>
+        <div class="profile-card">
+          <i class="fas fa-user"></i>
+          <p>Username: <%= username %></p>
+        </div>
+        <div class="profile-card">
+          <i class="fas fa-envelope"></i>
+          <p>Email: mathewsgeorge202@gmail.com</p>
+        </div>
+        <!-- Add more profile details here -->
+      </div>
+    </section>
+  </section>
+</div>
+
+<!-- Overlay -->
+<div class="overlay"></div>
+ 
+
+  <script>
+
+     // Add this inside the <script> tag
+document.getElementById('profile-icon').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Update heading
+    document.querySelector('.main-top h1').innerText = 'Profile';
+    // Hide all sections
+    hideAllSections();
+    // Show profile section
+    document.querySelector('.profile').style.display = 'block';
+});
+
+    
+   // JavaScript code to handle navigation link clicks
+  document.getElementById('dashboard-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Update heading
+    document.querySelector('.main-top h1').innerText = 'Welcome to Dashboard';
+    // Hide all sections
+    hideAllSections();
+    // Show welcome section
+    document.getElementById('welcome').style.display = 'block';
+    document.querySelector('.welcome-message').style.display = 'block';
+    document.querySelector('.take-attendance-btn').style.display = 'block';
+  });
+
+  document.getElementById('report-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Update heading
+    document.querySelector('.main-top h1').innerText = 'Report';
+    // Hide all sections
+    hideAllSections();
+    // Show report section
+    document.querySelector('.report').style.display = 'block';
+  });
+
+  document.getElementById('attendance-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Update heading
+    document.querySelector('.main-top h1').innerText = 'Attendance';
+    // Hide all sections
+    hideAllSections();
+    // Show attendance section
+    document.querySelector('.attendance').style.display = 'block';
+  });
+
+  document.getElementById('students-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Update heading
+    document.querySelector('.main-top h1').innerText = 'List of All Students';
+    // Hide all sections
+    hideAllSections();
+    // Show students section
+    document.querySelector('.students').style.display = 'block';
+  });
+
+
+// Update the event listener for the profile-link
+document.getElementById('profile-link').addEventListener('click', function(event) {
+  event.preventDefault();
+  document.querySelector('.main-top h1').innerText = 'Profile';
+  hideAllSections();
+  document.querySelector('.profile').style.display = 'block'; // Updated class reference
+});
+
+
+ // Update the hideAllSections function
+function hideAllSections() {
+  document.getElementById('welcome').style.display = 'none';
+  document.querySelector('.welcome-message').style.display = 'none';
+  document.querySelector('.take-attendance-btn').style.display = 'none';
+  document.querySelector('.report').style.display = 'none';
+  document.querySelector('.attendance').style.display = 'none';
+  document.querySelector('.students').style.display = 'none';
+  document.querySelector('.profile').style.display = 'none'; // Updated class reference
+}
+
+  function displayStudentsByClass() {
+    var selectedClass = document.getElementById("attendanceClass").value;
+    var rows = document.getElementById("attendanceTablee").rows;
+
+    for (var i = 1; i < rows.length; i++) {
+        var classCell = rows[i].getElementsByTagName("td")[2].innerText;
+
+        if (selectedClass === "" || classCell === selectedClass) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+}
+
+
+  function takeAttendance() {
+    // Open the specified URL in a new tab
+    window.open("https://keshav-lemon.vercel.app/", "_blank");
+}
+
+
+function displayAttendanceByDateAndSubjectandPeriod() {
+    var selectedDate = new Date(document.getElementById("attendanceDate").value);
+    var selectedSubject = document.getElementById("attendanceSubject").value;
+    var selectedPeriod = document.getElementById("attendancePeriod").value; // Get the selected period
+    var totalPresent = 0;
+
+    var rows = document.getElementById("attendanceTable").rows;
+
+    for (var i = 1; i < rows.length; i++) {
+        var dateCell = new Date(rows[i].getElementsByTagName("td")[0].innerText);
+        var subjectCell = rows[i].getElementsByTagName("td")[3].innerText;
+        var periodCell = rows[i].getElementsByTagName("td")[4].innerText; // Get the period cell value
+
+        var dateMatches = dateCell.toDateString() === selectedDate.toDateString();
+        var subjectMatches = selectedSubject === "" || subjectCell === selectedSubject;
+        var periodMatches = selectedPeriod === "" || periodCell === selectedPeriod; // Check if the period matches
+
+        if (dateMatches && subjectMatches && periodMatches) {
+            rows[i].style.display = "";
+            totalPresent++;
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+
+    // Display total count
+    document.getElementById("totalPresentCount").innerText = totalPresent;
+}
+
+
+
+
+     function logout() {
+      // Redirect to the login page or any other action you want to perform on logout
+      window.location.href = "/"; // Assuming your login page is served at the root URL
+    }
+
+
+function sendMessage(studentName) {
+    // Make an AJAX request to your server to send an SMS using Twilio
+    // You need to have an endpoint on your server to handle this request
+    
+    // Assuming you're using Fetch API for AJAX requests
+    fetch('/send-sms', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ studentName: studentName })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('SMS sent successfully');
+        } else {
+            alert('Failed to send SMS');
+        }
+    })
+    .catch(error => {
+        console.error('Error sending SMS:', error);
+        alert('Failed to send SMS');
+    });
+}
+
+function sortTable(columnIndex) {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("attendanceTable");
+    switching = true;
+    // Set the sorting direction to ascending
+    dir = "asc"; 
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("td")[columnIndex];
+            y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+            if (dir == "asc") {
+                if (new Date(x.innerText) < new Date(y.innerText)) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (new Date(x.innerText) > new Date(y.innerText)) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount ++;
+        } else {
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+    // Toggle sort icon
+    var sortIcon = document.querySelector('.sort-icon');
+    sortIcon.classList.remove('fa-sort-asc', 'fa-sort-desc');
+    if (dir === "asc") {
+        sortIcon.classList.add('fa-sort-asc');
+    } else {
+        sortIcon.classList.add('fa-sort-desc');
+    }
+}
+
+  // Function to show the add attendance form
+  function showAddAttendanceForm() {
+        // Show overlay
+        document.querySelector('.overlay').style.display = 'block';
+        // Show the form container
+        document.querySelector('.attendance-form-container').style.display = 'block';
+    }
+
+    // Function to close the add attendance form
+    function closeAddAttendanceForm() {
+        // Hide overlay
+        document.querySelector('.overlay').style.display = 'none';
+        // Hide the form container
+        document.querySelector('.attendance-form-container').style.display = 'none';
+    }
+
+    // Function to submit the attendance form
+    function submitAttendance(event) {
+        event.preventDefault();
+
+        // Get form data
+        const formData = new FormData(document.getElementById('attendanceForm'));
+
+        // Convert form data to JSON object
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+
+        // Send form data to server
+        fetch('/add-attendance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Attendance added successfully');
+                // Reset the form after successful submission
+                document.getElementById('attendanceForm').reset();
+                // Hide the form
+                closeAddAttendanceForm();
+            } else {
+                throw new Error('Failed to add attendance');
+            }
+        })
+        .catch(error => {
+            console.error('Error adding attendance:', error);
+            alert('Failed to add attendance');
+        });
+    }
+
+    // Function to set the active tab in local storage
+function setActiveTab(tabId) {
+    localStorage.setItem('activeTab', tabId);
+}
+
+// Function to get the active tab from local storage
+function getActiveTab() {
+    return localStorage.getItem('activeTab');
+}
+
+// Function to switch to the active tab
+function switchToActiveTab() {
+    const activeTabId = getActiveTab();
+    if (activeTabId) {
+        const activeTab = document.getElementById(activeTabId);
+        if (activeTab) {
+            activeTab.click(); // Trigger click event to switch to the active tab
+        }
+    }
+}
+
+// Add event listeners to set the active tab when a navigation link is clicked
+document.querySelectorAll('.nav-itemm').forEach(item => {
+    item.addEventListener('click', function() {
+        setActiveTab(this.id); // Set the active tab to the clicked link's id
+    });
+});
+
+// Call switchToActiveTab when the DOM content is loaded
+document.addEventListener('DOMContentLoaded', switchToActiveTab);
+
+function refreshPage() {
+    location.reload();
+}
+
+function deleteAttendance(id, username) {
+    // Confirmation dialog
+    const isConfirmed = confirm('Are you sure you want to delete this data?');
+    
+    // Check if the user confirmed the deletion
+    if (isConfirmed) {
+        // Proceed with the deletion
+        fetch('/delete-attendance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: id, username: username }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Record deleted successfully');
+                // Optionally, refresh the page or remove the row from the table
+                location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert('Failed to delete record');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete record');
+        });
+    } else {
+        // If the user clicked Cancel, do nothing
+        console.log('Deletion cancelled by user.');
+    }
+}
+
+  </script>
+</body>
+</html>
