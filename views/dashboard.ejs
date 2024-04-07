@@ -622,7 +622,7 @@ function deleteAttendance(id, username) {
             if (data.success) {
                 alert('Record deleted successfully');
                 // Optionally, refresh the page or remove the row from the table
-                location.reload(); // Refresh the page to reflect the changes
+                refreshPage(); // Refresh the page to reflect the changes
             } else {
                 alert('Failed to delete record');
             }
