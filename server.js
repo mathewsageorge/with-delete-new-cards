@@ -25,12 +25,10 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // MongoDB Connection
-mongoose.connect('mongodb+srv://mathewsgeorge202:ansu@cluster0.ylyaonw.mongodb.net/Teachers_List?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect('mongodb+srv://mathewsgeorge202:ansu@cluster0.ylyaonw.mongodb.net/Teachers_List?retryWrites=true&w=majority')
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.error('MongoDB Connection Error:', err));
+
 
 // Twilio Configuration
 const accountSid = 'ACc07160ca1b3e33d178f16e780fc7d96a';
