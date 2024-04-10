@@ -111,10 +111,10 @@
           </div>
           <form id="attendanceForm"  onsubmit="submitAttendance(event)">
             <label for="serialNumber">Serial Number:</label>
-            <input type="text" id="serialNumber" name="serialNumber" required><br>
+            <input type="text" id="serialNumber" name="serialNumber" placeholder="Serial No or Roll No" required><br>
 
             <label for="logData">Log Data:</label>
-            <input type="text" id="logData" name="logData" required><br>
+            <input type="text" id="logData" name="logData"  value="in"  required><br>
 
             <label for="time">Time:</label>
             <input type="datetime-local" id="time" name="time" required><br>
@@ -133,8 +133,14 @@
       <option value="Period 6">Period 6</option>
     </select><br>
 
-            <label for="subject">Subject:</label>
-            <input type="text" id="subject" name="subject"><br>
+    <label for="subject">Subject:</label>
+    <select id="subject" name="subject">
+      <option value="CDS6">CD-S6</option>
+      <option value="CGIPS6">CGIP-S6</option>
+      <option value="AADS6">AAD-S6</option>
+      <option value="PYTHONS6">PYTHON-S6</option>
+      <option value="IEFTS6">IEFT-S6</option>
+    </select><br>
 
             <!-- Select collection for adding data -->
             <label for="collection">Select Collection:</label>
@@ -291,11 +297,11 @@
 
     <section class="attendance-percentage" style="display:none;">
       <div class="attendance-percentage-content">
-        <h1>Calculate Attendance Percentage Based on Subject</h1>
-        <label for="subjectInput">Subject:</label>
-        <input type="text" id="subjectInput" name="subject" required><br>
+        <h1>Calculate Attendance Percentage Based on Subject</h1><br>
+        <label for="subjectInput">Subject: (Format for entrying below input : <b> <span class="sub"> SUBJECT</span></span><span class="hai">CLASS</span> Example:CDS6)</b></label>
+        <input  type="text" id="subjectInput" name="subject" placeholder="FORMAT:CDS6/AADS6/CGIPS6/PYTHONS6"  required><br>
         <label for="totalClassesInput">Total Classes Conducted:</label>
-        <input type="number" id="totalClassesInput" name="totalClasses" required><br>
+        <input type="number" id="totalClassesInput" name="totalClasses" placeholder=" Enter Total Classes Conducted for Above Subject (Toatal Hours Taken)" required><br>
         <button onclick="calculateAttendancePercentage()" class="secondary-button">Calculate</button>
         
         <!-- Predefined table structure -->
@@ -423,10 +429,17 @@ function hideAllSections() {
 }
 
 function calculateAttendancePercentage() {
-    const subject = document.getElementById('subjectInput').value;
-    const totalClasses = document.getElementById('totalClassesInput').value;
-    const username = '<%= username %>'; // Assuming you have the username available in your EJS template
+    // Get the subject input and convert it to uppercase
+    const subjectInput = document.getElementById('subjectInput');
+    let subject = subjectInput.value.toUpperCase(); // Convert to uppercase
 
+    // Assuming you have the username available in your EJS template
+    const username = '<%= username %>';
+
+    // Get the total classes input
+    const totalClasses = document.getElementById('totalClassesInput').value;
+
+    // Fetch request to calculate attendance percentage
     fetch('/calculate-attendance-percentage', {
         method: 'POST',
         headers: {
@@ -450,6 +463,7 @@ function calculateAttendancePercentage() {
         console.error('Error:', error);
     });
 }
+
 
   function displayStudentsByClass() {
     var selectedClass = document.getElementById("attendanceClass").value;
