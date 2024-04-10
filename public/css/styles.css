@@ -167,6 +167,8 @@ a:hover i{
   text-transform: capitalize;
 }
 
+
+
 /* .attendance-list{ */
   /* width: 100%; */
   /* padding: 10px; */
@@ -184,6 +186,16 @@ a:hover i{
   border-radius: 10px;
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
+
+.attendance-percentage-content{
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+}
+
 .table{
   border-collapse: collapse;
   margin: 25px 0;
@@ -587,5 +599,38 @@ table thead tr{
 
 .fa-file-excel {
   color: #008000; /* Green color for Excel icon */
+}
+
+ /* Additional CSS can go here */
+ .attendance-percentage-content label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+.attendance-percentage-content input[type="text"],
+.attendance-percentage-content input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Makes sure padding does not affect overall width */
+  font-size: 16px;
+}
+
+.attendance-percentage-content button.secondary-button {
+  background-color: #34AF6D;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.attendance-percentage-content button.secondary-button:hover {
+  background-color: #45a049;
 }
 
