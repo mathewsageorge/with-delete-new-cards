@@ -7,11 +7,6 @@ const exceljs = require('exceljs');
 const PDFDocument = require('pdfkit');
 const ObjectId = mongoose.Types.ObjectId;
 
-
-
-
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -94,9 +89,10 @@ function mapSerialToStudentName(serialNumber) {
         "05:39:01:60:06:b0:c1":"ADWIDTH",
         "05:33:96:60:06:b0:c1":"KEVIN",
         "05:33:96:60:06:b0:a1":"ABEL",
-        "05:33:96:60:06:b0:d1":"Disha",
+        "05:33:96:60:06:b0:d1":"DISHA",
         "05:33:96:60:06:b0:e1":"JOSEPH",
-        "05:33:96:60:06:b0:f1":"MERLIN"
+        "05:33:96:60:06:b0:f1":"MERLIN",
+        "1":"Mathews"
         // Add more mappings as needed
     };
     return serialToNameMap[serialNumber] || "Unknown"; // Return student name or "Unknown" if not found
@@ -316,6 +312,46 @@ app.post('/add-attendance', async (req, res) => {
     } catch (error) {
         console.error('Failed to delete record:', error);
         res.status(500).json({ success: false, message: 'Failed to delete record' });
+    }
+});
+
+app.post('/calculate-attendance-percentage', async (req, res) => {
+    const { subject, totalClasses, username } = req.body;
+
+    if (!subject || !totalClasses || !username) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const user = users[username];
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    try {
+        const Attendance = mongoose.model('Attendance', attendanceSchema, user.collection);
+        const attendanceRecords = await Attendance.find({ subject: subject });
+
+        // Calculate attendance percentage for each student
+        let attendanceCounts = {};
+        attendanceRecords.forEach(record => {
+            const studentName = mapSerialToStudentName(record.serialNumber);
+            if (attendanceCounts[studentName]) {
+                attendanceCounts[studentName] += 1;
+            } else {
+                attendanceCounts[studentName] = 1;
+            }
+        });
+
+        let percentages = [];
+        for (let studentName in attendanceCounts) {
+            let percentage = (attendanceCounts[studentName] / totalClasses) * 100;
+            percentages.push({ studentName, percentage: percentage.toFixed(2) });
+        }
+
+        res.json(percentages);
+    } catch (error) {
+        console.error('Error calculating attendance percentage:', error);
+        res.status(500).json({ error: 'Failed to calculate attendance percentage' });
     }
 });
 
