@@ -64,25 +64,12 @@
         <!-- Welcome content with button for taking attendance -->
         <div class="welcome-message" style="display: block;">
             <h3 style="color: #55c57a;">Welcome <%= username %>!</h3>
-            <p>Welcome to your dashboard! Explore the tabs to manage your tasks, view attendance, and update your profile.</p>
+            <p>Welcome to your dashboard! Explore the tabs to manage your tasks, view attendance, and update your profile.
+ Bid farewell to tedious excel sheets, and say hello to a more efficient way to manage employee attendance. Generate insightful reports, regularize attendance</p>
         </div><br>
 <div class="card-container">
-  <!-- Card 1 -->
-  <div class="card">
-    <h2>Hello <%= username %></h2>
-    <p>
-      Bid farewell to tedious excel sheets, and say hello to a more efficient way to manage employee attendance. Generate insightful reports, regularize attendance
-    </p>
-  </div>
-
-  <!-- Upcoming Holiday Card -->
-  <div class="card" id="upcomingHolidaysCard">
-    <h2>Upcoming Holidays</h2>
-    <div class="card-content" id="upcomingHolidaysContent">
-        <!-- Holidays will be dynamically inserted here -->
-    </div>
-</div>
- <!-- Card 3 -->
+ 
+<!-- Card 3 -->
  <div onclick="takeAttendance()" class="card">
   <h2>Take Attendance Using NFC</h2>
   <p>Click Here to Attendance Using NFC</p>
@@ -94,6 +81,14 @@
   <h2>Manually Add Attendance</h2>
   <p>Click Here to Attendance Manually</p>
   <button onclick="showAddAttendanceForm()" class="secondary-button manually-add report-link">Manually Add Attendance</button>
+</div>
+
+ <!-- Upcoming Holiday Card -->
+  <div class="card" id="upcomingHolidaysCard">
+    <h2>Upcoming Holidays</h2>
+    <div class="card-content" id="upcomingHolidaysContent">
+        <!-- Holidays will be dynamically inserted here -->
+    </div>
 </div>
 
 </div>
