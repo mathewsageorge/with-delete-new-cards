@@ -37,10 +37,15 @@
           <i class="fas fa-users"></i>
           <span class="nav-item">Total Students</span>
         </a></li>
+        <li><a href="#" id="attendance-percentage-link" class="nav-itemm">
+          <i class="fas fa-percentage"></i>
+          <span class="nav-item">Attendance %</span>
+        </a></li>
 <li><a href="#" id="profile-link" class="nav-itemm">
   <i class="fas fa-user"></i>
   <span class="nav-item">Profile</span>
 </a></li>
+
         <li><a href="#" class="logout" onclick="logout()" id="logout-link" class="nav-itemm">
           <i onclick="logout()" class="fas fa-sign-out-alt"></i>
           <span onclick="logout()" class="nav-item">Log out</span>
@@ -284,6 +289,32 @@
         </div>
     </section>
 
+    <section class="attendance-percentage" style="display:none;">
+      <div class="attendance-percentage-content">
+        <h1>Calculate Attendance Percentage Based on Subject</h1>
+        <label for="subjectInput">Subject:</label>
+        <input type="text" id="subjectInput" name="subject" required><br>
+        <label for="totalClassesInput">Total Classes Conducted:</label>
+        <input type="number" id="totalClassesInput" name="totalClasses" required><br>
+        <button onclick="calculateAttendancePercentage()" class="secondary-button">Calculate</button>
+        
+        <!-- Predefined table structure -->
+        <div id="attendancePercentageResults" style="display: none;">
+          <table class="table" id="attendancePercentageTable">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Attendance Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data will be inserted here dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <section class="profile" style="display:none;">
       <div class="profile-content">
         <h1>Profile Information</h1>
@@ -371,6 +402,13 @@ document.getElementById('profile-link').addEventListener('click', function(event
   document.querySelector('.profile').style.display = 'block'; // Updated class reference
 });
 
+document.getElementById('attendance-percentage-link').addEventListener('click', function(event) {
+  event.preventDefault();
+  document.querySelector('.main-top h1').innerText = 'Attendance Percentage';
+  hideAllSections();
+  document.querySelector('.attendance-percentage').style.display = 'block';
+});
+
 
  // Update the hideAllSections function
 function hideAllSections() {
@@ -381,6 +419,36 @@ function hideAllSections() {
   document.querySelector('.attendance').style.display = 'none';
   document.querySelector('.students').style.display = 'none';
   document.querySelector('.profile').style.display = 'none'; // Updated class reference
+  document.querySelector('.attendance-percentage').style.display = 'none';
+}
+
+function calculateAttendancePercentage() {
+    const subject = document.getElementById('subjectInput').value;
+    const totalClasses = document.getElementById('totalClassesInput').value;
+    const username = '<%= username %>'; // Assuming you have the username available in your EJS template
+
+    fetch('/calculate-attendance-percentage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ subject, totalClasses, username })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tbody = document.querySelector('#attendancePercentageTable tbody');
+        tbody.innerHTML = ''; // Clear existing rows
+        // Loop through each item in the data array and add table rows
+        data.forEach(item => {
+            const row = `<tr><td>${item.studentName}</td><td>${item.percentage}%</td></tr>`;
+            tbody.innerHTML += row;
+        });
+        // Display the table after data is fetched and added
+        document.getElementById('attendancePercentageResults').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
   function displayStudentsByClass() {
@@ -636,6 +704,8 @@ function deleteAttendance(id, username) {
         console.log('Deletion cancelled by user.');
     }
 }
+
+
 
   </script>
 </body>
