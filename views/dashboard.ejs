@@ -8,6 +8,7 @@
   <!-- Font Awesome Cdn Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* Additional CSS can go here */
    
@@ -19,28 +20,35 @@
       <ul>
         <li><a href="#" class="logo">
           <img src="images/nfc-icon-31.png">
-          <span class="nav-item">Dashboard</span>
+          <span class="nav-item">NFCAMS</span>
         </a></li>
         <li><a href="#" id="dashboard-link" class="nav-itemm">
           <i class="fas fa-menorah"></i>
           <span class="nav-item">Dashboard</span>
         </a></li>
-        <li><a href="#" id="report-link" class="nav-itemm">
-          <i class="fas fa-file-alt"></i>
-          <span class="nav-item">Report</span>
-        </a></li>
         <li><a href="#" id="attendance-link" class="nav-itemm">
           <i class="fas fa-chart-bar"></i>
           <span class="nav-item">View Attendance</span>
-        </a></li>
-        <li><a href="#" id="students-link" class="nav-itemm">
-          <i class="fas fa-users"></i>
-          <span class="nav-item">Total Students</span>
         </a></li>
         <li><a href="#" id="attendance-percentage-link" class="nav-itemm">
           <i class="fas fa-percentage"></i>
           <span class="nav-item">Attendance %</span>
         </a></li>
+        <li><a href="#" id="message-link" class="nav-itemm">
+          <i class="fas fa-envelope"></i>
+          <span class="nav-item">Messages</span>
+        </a></li>
+        <li><a href="#" id="report-link" class="nav-itemm">
+          <i class="fas fa-file-alt"></i>
+          <span class="nav-item">Report</span>
+        </a></li>
+        
+        <li><a href="#" id="students-link" class="nav-itemm">
+          <i class="fas fa-users"></i>
+          <span class="nav-item">Total Students</span>
+        </a></li>
+        
+        
 <li><a href="#" id="profile-link" class="nav-itemm">
   <i class="fas fa-user"></i>
   <span class="nav-item">Profile</span>
@@ -64,12 +72,11 @@
         <!-- Welcome content with button for taking attendance -->
         <div class="welcome-message" style="display: block;">
             <h3 style="color: #55c57a;">Welcome <%= username %>!</h3>
-            <p>Welcome to your dashboard! Explore the tabs to manage your tasks, view attendance, and update your profile.
- Bid farewell to tedious excel sheets, and say hello to a more efficient way to manage employee attendance. Generate insightful reports, regularize attendance</p>
+            <p>Welcome to your dashboard! Explore the tabs to manage your tasks, view attendance, and update your profile.</p>
         </div><br>
 <div class="card-container">
- 
-<!-- Card 3 -->
+    
+ <!-- Card 3 -->
  <div onclick="takeAttendance()" class="card">
   <h2>Take Attendance Using NFC</h2>
   <p>Click Here to Attendance Using NFC</p>
@@ -81,14 +88,6 @@
   <h2>Manually Add Attendance</h2>
   <p>Click Here to Attendance Manually</p>
   <button onclick="showAddAttendanceForm()" class="secondary-button manually-add report-link">Manually Add Attendance</button>
-</div>
-
- <!-- Upcoming Holiday Card -->
-  <div class="card" id="upcomingHolidaysCard">
-    <h2>Upcoming Holidays</h2>
-    <div class="card-content" id="upcomingHolidaysContent">
-        <!-- Holidays will be dynamically inserted here -->
-    </div>
 </div>
 
 </div>
@@ -164,38 +163,44 @@
         <!-- Button to select date -->
         <label for="attendanceDate">Select Date: </label>
         <input type="date" id="attendanceDate">
-        <!-- Add select input for subject -->
-        <label for="attendanceSubject">Select Subject: </label>
-        <select id="attendanceSubject">
-            <option value="">All Subjects</option>
-            <% subjects.forEach(subject => { %>
-                <option value="<%= subject %>"><%= subject %></option>
-            <% }); %>
-        </select>
-        <label for="attendancePeriod">Select Period: </label>
-<select id="attendancePeriod">
-    <option value="">All Periods</option>
-    <option value="Period 1">Period 1</option>
-    <option value="Period 2">Period 2</option>
-    <option value="Period 3">Period 3</option>
-    <option value="Period 4">Period 4</option>
-    <option value="Period 5">Period 5</option>
-    <option value="Period 6">Period 6</option>
-    <!-- Add more options for other periods as needed -->
-</select>
+        <!-- Enhanced select input for subject with modern styling -->
+<div class="select-container">
+  <label for="attendanceSubject" class="select-label">Select Subject:</label>
+  <select id="attendanceSubject" class="select-styled">
+      <option value="">All Subjects</option>
+      <% subjects.forEach(subject => { %>
+          <option value="<%= subject %>"><%= subject %></option>
+      <% }); %>
+  </select>
+</div>
+
+<!-- Enhanced select input for period with modern styling -->
+<div class="select-container">
+  <label for="attendancePeriod" class="select-label">Select Period:</label>
+  <select id="attendancePeriod" class="select-styled">
+      <option value="">All Periods</option>
+      <option value="Period 1">Period 1</option>
+      <option value="Period 2">Period 2</option>
+      <option value="Period 3">Period 3</option>
+      <option value="Period 4">Period 4</option>
+      <option value="Period 5">Period 5</option>
+      <option value="Period 6">Period 6</option>
+      <!-- Add more options for other periods as needed -->
+  </select>
+</div>
 
         <button onclick="displayAttendanceByDateAndSubjectandPeriod()" class="secondary-button">Display Attendance</button>
 
         <table id="attendanceTable" class="table">
           <thead>
             <tr>
-              <th onclick="sortTable(0)" style="position: relative;">Date <span class="sort-icon fas"></span></th>
-              <th onclick="sortTable(1)" style="position: relative;">Time <span class="sort-icon"></span></th>
-              <th onclick="sortTable(2)" style="position: relative;">Student Name<span class="sort-icon"></span></th>
-              <th onclick="sortTable(3)" style="position: relative;">Subject<span class="sort-icon"></span></th>
-              <th onclick="sortTable(4)" style="position: relative;">Period<span class="sort-icon"></span></th>
-              <th onclick="sortTable(6)" style="position: relative;">Message <span class="sort-icon"></span></th>
-              <th onclick="sortTable(6)" style="position: relative;">Delete <span class="sort-icon"></span></th>
+              <th  style="position: relative;">Date </th>
+              <th  style="position: relative;">Time </th>
+              <th  style="position: relative;">Student Name</th>
+              <th  style="position: relative;">Subject</th>
+              <th  style="position: relative;">Period</th>
+              <th  style="position: relative;">Message </th>
+              <th  style="position: relative;">Delete </th>
             </tr>
           </thead>
           <tbody>
@@ -290,6 +295,44 @@
         </div>
     </section>
 
+    <section class="messages" style="display:none;">
+      <H1>You can send bulk SMS to parents informing them about their child’s performance, attendance, important dates, etc</H1>
+      <div class="messages-content">
+        <h2>Send a Message</h2>
+        <form id="messageForm" action="/send-message" method="post" class="message-form" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="recipientType">Recipient Type:</label>
+            <select name="recipientType" id="recipientType" class="form-control">
+              <option value="individual">Individual</option>
+              <option value="parents">Parents (Group MSG)</option>
+              <option value="students">Students (Group MSG)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="email">Email (for individual only not used for group msgs) :</label>
+            <input type="email" id="email" name="email" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject For Email:</label>
+            <input type="text" id="subject" name="subject" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="message">Message Content For Email:</label>
+            <textarea id="message" name="message" class="form-control"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="pdfFile">PDF File:</label>
+            <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" class="form-control">
+          </div>
+
+
+          <button type="submit" class="btn-send">Send <i class="fas fa-paper-plane"></i></button>
+        </form>
+        <div id="messageStatus"></div> <!-- Placeholder for the status message -->
+      </div>
+    </section>
+
     <section class="attendance-percentage" style="display:none;">
       <div class="attendance-percentage-content">
         <h1>Calculate Attendance Percentage Based on Subject</h1><br>
@@ -302,6 +345,7 @@
         <!-- Predefined table structure -->
         <div id="attendancePercentageResults" style="display: none;">
           <table class="table" id="attendancePercentageTable">
+            <button onclick="generateAttendancePercentagePDF()" class="secondary-button">Generate PDF Report</button>
             <thead>
               <tr>
                 <th>Student Name</th>
@@ -309,6 +353,7 @@
               </tr>
             </thead>
             <tbody>
+              
               <!-- Data will be inserted here dynamically -->
             </tbody>
           </table>
@@ -338,6 +383,26 @@
  
 
   <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('messageForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this); // 'this' refers to the form
+        fetch('/send-message', {
+            method: 'POST',
+            body: formData, // Send the form data
+        })
+        .then(response => response.text()) // Convert the response to text
+        .then(data => {
+            document.getElementById('messageStatus').innerText = data; // Display the success message
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('messageStatus').innerText = 'Error sending message';
+        });
+    });
+});
 
      // Add this inside the <script> tag
 document.getElementById('profile-icon').addEventListener('click', function(event) {
@@ -410,6 +475,13 @@ document.getElementById('attendance-percentage-link').addEventListener('click', 
   document.querySelector('.attendance-percentage').style.display = 'block';
 });
 
+document.getElementById('message-link').addEventListener('click', function(event) {
+  event.preventDefault();
+  document.querySelector('.main-top h1').innerText = 'Messages';
+  hideAllSections();
+  document.querySelector('.messages').style.display = 'block';
+});
+
 
  // Update the hideAllSections function
 function hideAllSections() {
@@ -421,7 +493,10 @@ function hideAllSections() {
   document.querySelector('.students').style.display = 'none';
   document.querySelector('.profile').style.display = 'none'; // Updated class reference
   document.querySelector('.attendance-percentage').style.display = 'none';
+  document.querySelector('.messages').style.display = 'none';
 }
+
+
 
 function calculateAttendancePercentage() {
     // Get the subject input and convert it to uppercase
@@ -457,6 +532,15 @@ function calculateAttendancePercentage() {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+function generateAttendancePercentagePDF() {
+    const subject = document.getElementById('subjectInput').value;
+    const totalClasses = document.getElementById('totalClassesInput').value;
+    const username = '<%= username %>'; // Assuming username is available in your EJS template
+
+    // Redirect to the server route that generates the PDF
+    window.location.href = `/generate-attendance-percentage-pdf?subject=${subject}&totalClasses=${totalClasses}&username=${username}`;
 }
 
 
@@ -513,8 +597,7 @@ function displayAttendanceByDateAndSubjectandPeriod() {
 
 
 
-
-     function logout() {
+function logout() {
       // Redirect to the login page or any other action you want to perform on logout
       window.location.href = "/"; // Assuming your login page is served at the root URL
     }
@@ -545,51 +628,7 @@ function sendMessage(studentName) {
     });
 }
 
-function sortTable(columnIndex) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("attendanceTable");
-    switching = true;
-    // Set the sorting direction to ascending
-    dir = "asc"; 
-    while (switching) {
-        switching = false;
-        rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = rows[i].getElementsByTagName("td")[columnIndex];
-            y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-            if (dir == "asc") {
-                if (new Date(x.innerText) < new Date(y.innerText)) {
-                    shouldSwitch = true;
-                    break;
-                }
-            } else if (dir == "desc") {
-                if (new Date(x.innerText) > new Date(y.innerText)) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-        }
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            switchcount ++;
-        } else {
-            if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-            }
-        }
-    }
-    // Toggle sort icon
-    var sortIcon = document.querySelector('.sort-icon');
-    sortIcon.classList.remove('fa-sort-asc', 'fa-sort-desc');
-    if (dir === "asc") {
-        sortIcon.classList.add('fa-sort-asc');
-    } else {
-        sortIcon.classList.add('fa-sort-desc');
-    }
-}
+
 
   // Function to show the add attendance form
   function showAddAttendanceForm() {
