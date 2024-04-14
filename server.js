@@ -6,6 +6,8 @@ const twilio = require('twilio');
 const exceljs = require('exceljs');
 const PDFDocument = require('pdfkit');
 const ObjectId = mongoose.Types.ObjectId;
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Files will be saved in the 'uploads' directory
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +26,64 @@ mongoose.connect('mongodb+srv://mathewsgeorge202:ansu@cluster0.ylyaonw.mongodb.n
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.error('MongoDB Connection Error:', err));
 
+
+// server.js
+const nodemailer = require('nodemailer');
+
+// Configure Nodemailer with your SMTP settings
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // For example, if you're using Gmail
+  auth: {
+    user: 'mathewsgeorge202@gmail.com',
+    pass: 'lhmw gvsd pydu wecj'
+  }
+});
+
+app.post('/send-message', upload.single('pdfFile'), async (req, res) => {
+    const { recipientType, email, subject, message } = req.body;
+  
+    // Define recipient emails for groups directly in the server code
+    const groupEmails = {
+        parents: ['mathewsgeorge2003@gmail.com', 'ansurose41@gmail.com',"pta21cs044@cek.ac.in"], // Example group
+        students: ['student1@example.com', 'student2@example.com'] // Another example group
+    };
+    // Determine the recipient based on the recipientType
+    let recipients;
+    if (recipientType === 'individual') {
+        recipients = email; // Use the provided email for individual messages
+    } else {
+        // Use a predefined group of emails from groupEmails
+        recipients = groupEmails[recipientType].join(', '); // Join group emails into a single string
+    }
+    // Define the email options
+    let mailOptions = {
+        from: 'mathewsgeorge202@gmail.com',
+        to: recipients,
+        subject: subject,
+        text: message,
+    };
+
+    // Check if a file was uploaded and include it as an attachment if present
+    if (req.file) {
+        mailOptions.attachments = [
+            {
+                filename: req.file.originalname,
+                path: req.file.path
+            }
+        ];
+    }
+    
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+            res.send('Error sending message');
+        } else {
+            console.log('Message sent: ' + info.response);
+            res.send('Message sent successfully');
+        }
+    });
+});
 
 // Twilio Configuration
 const accountSid = 'ACc07160ca1b3e33d178f16e780fc7d96a';
@@ -352,6 +412,67 @@ app.post('/calculate-attendance-percentage', async (req, res) => {
     } catch (error) {
         console.error('Error calculating attendance percentage:', error);
         res.status(500).json({ error: 'Failed to calculate attendance percentage' });
+    }
+});
+
+app.get('/generate-attendance-percentage-pdf', async (req, res) => {
+    const { subject, totalClasses, username } = req.query;
+
+    // Validate input
+    if (!subject || !totalClasses || !username) {
+        return res.status(400).send('Missing required query parameters');
+    }
+
+    const user = users[username];
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+
+    try {
+        // Assuming you have a function to map serial numbers to student names
+        // and your attendance records are stored in a way that they can be queried by subject
+        const Attendance = mongoose.model('Attendance', attendanceSchema, user.collection);
+        const attendanceRecords = await Attendance.find({ subject: subject });
+
+        // Initialize an object to count attendance for each student
+        let attendanceCounts = {};
+
+        // Loop through each attendance record
+        attendanceRecords.forEach(record => {
+            const studentName = mapSerialToStudentName(record.serialNumber);
+            if (attendanceCounts[studentName]) {
+                attendanceCounts[studentName] += 1;
+            } else {
+                attendanceCounts[studentName] = 1;
+            }
+        });
+
+        // Calculate attendance percentage for each student
+        let percentages = [];
+        for (let studentName in attendanceCounts) {
+            let percentage = (attendanceCounts[studentName] / totalClasses) * 100;
+            percentages.push({ studentName, percentage: percentage.toFixed(2) });
+        }
+
+        // Generate PDF
+        const doc = new PDFDocument();
+        res.setHeader('Content-disposition', 'attachment; filename="attendance_percentage_report.pdf"');
+        res.setHeader('Content-type', 'application/pdf');
+        doc.pipe(res);
+
+        doc.fontSize(14).text('Attendance Percentage Report', { align: 'center' }).moveDown();
+        doc.text(`Subject: ${subject}`).moveDown();
+        doc.text(`Total Classes: ${totalClasses}`).moveDown(2);
+
+        percentages.forEach(({ studentName, percentage }) => {
+            doc.text(`${studentName}: ${percentage}%`);
+            doc.moveDown();
+        });
+
+        doc.end();
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).send('Failed to generate PDF');
     }
 });
 
