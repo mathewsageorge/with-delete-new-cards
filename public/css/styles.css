@@ -641,3 +641,93 @@ table thead tr{
 .sub{
   color: #0056b3;
 }
+
+/* NEWWW */
+
+.select-container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.select-label {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.select-styled {
+  padding: 10px 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.select-styled:hover,
+.select-styled:focus {
+  border-color: #007bff;
+}
+
+.select-styled:active {
+  border-color: #0056b3;
+}
+
+/* Enhanced Message Form Styles */
+.messages-content {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.message-form .form-group {
+  margin-bottom: 25px;
+}
+
+.message-form .form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e7e7e7;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.message-form .form-control:focus {
+  border-color: #34AF6D;
+}
+
+.message-form .btn-send {
+  background-color: #34AF6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.message-form .btn-send:hover {
+  background-color: #0056b3;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
